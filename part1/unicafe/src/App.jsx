@@ -5,7 +5,16 @@ const Button = ({handleClick, text}) => {
   return (
     <button onClick={() => handleClick(text)}>{text}</button>
   )
-  
+}
+
+const StatisticLine = ({text, value}) => {
+  return (
+    <>
+      <td>{text}</td>
+      <td>{value}</td>
+    </>
+    
+  )
 }
 const Feedback = ({handleClick}) => {
   return (
@@ -19,12 +28,43 @@ const Feedback = ({handleClick}) => {
 }
 
 const Statistics = ({good, neutral, bad}) => {
+
+  console.log("good in stats", good === 0)
+  console.log("neutral in stats", neutral === 0)
+  console.log("bad in stats", bad === 0)
+  if (good !== 0 || neutral !== 0 || bad !== 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <table>
+          <tbody>
+            <tr>
+              <StatisticLine text="good" value={good}/>
+            </tr>
+            <tr>
+            < StatisticLine text="neutral" value={neutral}/>
+            </tr>
+            <tr>
+              <StatisticLine text="bad" value={bad}/>
+            </tr>
+            <tr>
+            <StatisticLine text="all" value={good + neutral + bad}/>
+            </tr>
+            <tr>
+            <StatisticLine text="average" value={(good + (bad*-1)) / (good + neutral + bad)}/>
+            </tr>
+            <tr>
+              <StatisticLine text="positive" value={((good/(good + neutral + bad))*100 + " %")}/>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    )
+  }
   return (
     <div>
       <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
+      <p>no feedback given</p>
     </div>
   )
 }
