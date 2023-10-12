@@ -1,4 +1,6 @@
-const Sum = ({ parts }) => {
+import React from 'react'
+
+export const Sum = ({ parts }) => {
  const sum = parts.reduce((currentsum, part) => currentsum + part.exercises, 0)
   console.log(sum)
   return (
@@ -8,7 +10,7 @@ const Sum = ({ parts }) => {
   )
 }
 
-const Part = ({ name, exercises }) => {
+export const Part = ({ name, exercises }) => {
   return (
     <p>
        {name + " " + exercises}
@@ -16,7 +18,8 @@ const Part = ({ name, exercises }) => {
   )
 }
 
-const Content = ({ parts }) => {
+
+export const Content = ({ parts }) => {
   console.log(parts)
   return (
     <div>
@@ -27,7 +30,7 @@ const Content = ({ parts }) => {
   )
 }
 
-const Header = ({ name }) => {
+export const Header = ({ name }) => {
   console.log(name)
   return (
     <h1>
@@ -36,7 +39,7 @@ const Header = ({ name }) => {
   )
 }
 
-const Section = ({ section }) => {
+export const Section = ({ section }) => {
   console.log(section)
   return (
     <div>
@@ -47,7 +50,7 @@ const Section = ({ section }) => {
   )
 }
 
-const Course = ({ course }) => {
+export const Course = ({ course }) => {
   console.log(course)
   return (
     <div>
