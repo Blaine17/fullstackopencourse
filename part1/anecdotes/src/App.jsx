@@ -7,6 +7,18 @@ const Button = ({handleClick, text}) => {
   )
 }
 
+const Anecdote = ({anecdote}) => {
+  return (
+    <div>{anecdote}</div>
+  )
+}
+
+const Votes = ({text}) => {
+  return (
+    <div>{text}</div>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -40,12 +52,12 @@ const App = () => {
   return (
     <div>
       <h1>Anecdote of the day</h1>
-      <div>{anecdotes[selected]}</div>
-      <div>{"has " + votes[selected] + " votes"}</div>
+      <Anecdote anecdote={anecdotes[selected]}/>
+      <Votes text={"has " + votes[selected] + " votes"} />
       <Button handleClick={randomQuote} text={"next anecdote"}/>
       <Button handleClick={handleVote} text={"vote"}/>
       <h1>Anecdote with the most votes</h1>
-      <div>{winner}</div>
+      <Anecdote anecdote={winner}/>
     </div>
   )
 }
