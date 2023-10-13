@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import api from './services/api'
 
-const Person = ({ person }) => {
-  console.log(person)
+const Person = ({ removePerson, id, name, number }) => {
+  console.log(removePerson)
   return (
     <div>
-       {`${person.name}  ${person.number}`}
+       {name} {number}
+       <button type="submit" onClick={()=> removePerson(id)}>Delete</button>
     </div>
   )
 }
@@ -35,28 +38,32 @@ const Form = ({ onSubmit, value, onChange }) => {
   )
 }
 
-const FilteredPersons = ({ filteredaraay }) => {
-  
+const FilteredPersons = ({ removePerson, filteredaraay }) => {
   return (
     <>
-       {filteredaraay.map((person) => <div key={person.name}> {`${person.name}  ${person.number}`}</div>
+      {filteredaraay.map((person) => (
+        <Person key={person.name} removePerson={removePerson} id={person.id} name={person.name} number={person.number} />
+      )
       )}
     </>
   )
 }
 
 
-const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+const App = () => { 
 
+  const [persons, setPersons] = useState([{name: "none"}])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+
+  useEffect(() => {
+    console.log('effect')
+    api.getAll()
+    .then(persons => {
+      setPersons(persons)
+    })
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -66,7 +73,13 @@ const App = () => {
     persons.map((person) => {
       console.log(person.name, newName)
       if (person.name === newName) {
-        alert(`${newName} is already added to phonebook`)
+        confirm(`${newName} is already added to phonebook, are you sure you want to update number`)
+        api.update({name: newName, number: newNumber}, person.id)
+        .then(updatedPerson => {
+          console.log(person.id)
+          console.log(updatedPerson)
+          setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
+        })
         setNewName("")
         setNewNumber("")
         check = true
@@ -77,11 +90,27 @@ const App = () => {
     if (check) {
       return
     }
-    const newPerson = persons.concat({name: newName, number: newNumber})
-    console.log(newPerson)
-    setPersons(newPerson)
+   
+    api.create({name: newName, number: newNumber})
+    .then(person => {
+      const newPerson = persons.concat(person)
+      setPersons(newPerson)
+    })
     setNewNumber("")
     setNewName("")
+  }
+
+  const removePerson = (id) => {
+    console.log(id)
+    const message = "are you sure you want to delete this entry"
+    confirm(message)
+    api.remove(id)
+    .then(person => {
+      console.log(person)
+      const removedPersons = persons.filter(person => person.id !== id)
+      console.log(removedPersons)
+      setPersons(removedPersons)
+    })
   }
 
   const handleNameChange = (event) => {
@@ -99,6 +128,7 @@ const App = () => {
   }
 
   console.log(newSearch)
+  console.log(persons)
   let search = newSearch.toLowerCase()
   const filteredaraay = persons.filter((person) => person.name.toLowerCase().startsWith(search))
   console.log(filteredaraay)
@@ -111,7 +141,7 @@ const App = () => {
       <h3>Add a new</h3>
       <Form onSubmit={addPerson} value={[newName,newNumber]} onChange={[handleNameChange, handleNumberChange]}/>
       <h2>Numbers</h2>
-      <FilteredPersons filteredaraay={filteredaraay}/>
+      <FilteredPersons removePerson ={removePerson}filteredaraay={filteredaraay}/>
     </div>
   )
 }
