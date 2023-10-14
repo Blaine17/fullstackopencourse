@@ -80,6 +80,9 @@ const App = () => {
           console.log(updatedPerson)
           setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
         })
+        .catch (error => {
+          alert(`the person ${newName} was unable to be updated `)
+        })
         setNewName("")
         setNewNumber("")
         check = true
@@ -95,6 +98,9 @@ const App = () => {
     .then(person => {
       const newPerson = persons.concat(person)
       setPersons(newPerson)
+    })
+    .catch(error => {
+      alert(`${newName} was unable to be added to the phonebook`)
     })
     setNewNumber("")
     setNewName("")
