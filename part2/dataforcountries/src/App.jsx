@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import api from './services/api'
 
@@ -34,7 +32,7 @@ const Filtered = ({ filteredSearch, setNewSearch }) => {
         Refine Search
       </div>
     )
-    }
+  }
   else if (filteredSearch.length <= 10 && filteredSearch.length > 1) {
     return (
       <div>
@@ -45,14 +43,41 @@ const Filtered = ({ filteredSearch, setNewSearch }) => {
         )}
       </div>
     )
-    }
+  }
     else if (filteredSearch.length === 1) {
-    return (
-      <Country country={filteredSearch[0]} />
-    )
+      return (
+        <Country country={filteredSearch[0]} />
+      )
     }
+}
 
-  
+const Text = ({ text, value }) => {
+  return (
+    <div>
+      {`${text} ${value}`}
+    </div>
+  )
+}
+
+const ListOfText = ({ country }) => {
+  return (
+    <ul>
+      {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
+    </ul>
+  )
+}
+
+const CountryWeather = ({ weather }) => {
+  return (
+    <div>
+      {weather 
+      ? <div>
+          <div>{`${weather.current.feelslike_f} Farenheit`}</div>
+          <img src={weather.current.condition.icon}></img>
+      </div> 
+      : <div>No weather data</div>}
+    </div>
+  )
 }
 
 const Country  = ({ country }) => {
@@ -74,28 +99,13 @@ const Country  = ({ country }) => {
   return (
     <div>
       <h1>{country.name.common}</h1>
-      <div>capital {country.capital}</div>
-      <div>area {country.area}</div>
+      <Text text="capital" value={country.capital} />
+      <Text text="area" value={country.area}/>
       <h2>languages</h2>
-      <ul>
-        {Object.keys(country.languages).map(language => {
-        <li key={language} >{Object.values(language)}</li>
-        console.log
-        })}
-      </ul>
-      <ul>
-        {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
-      </ul>
-      <div>
-        <img src={country.flags.png}/>
-      </div>
+      <ListOfText country={country}/>
+      <img src={country.flags.png}/>
       <h2>weather</h2>
-      {weather 
-      ? <div>
-          <div>{`${weather.current.feelslike_f} Farenheit`}</div>
-          <img src={weather.current.condition.icon}></img>
-      </div> 
-      : <div>No weather data</div>}
+      <CountryWeather weather={weather}/>
     </div>
   )
 }
@@ -108,11 +118,15 @@ function App() {
   // console.log(api.getCountry('finland'))
   const [countries, setCountries] = useState([])
   const [newSearch, setNewSearch] = useState("")
+  const [countriesError, setCountriesError] = useState('')
 
   useEffect(() => {
     api.getAllCountries()
     .then(countries => {
       setCountries(countries)
+    })
+    .catch( error => {
+      setCountriesError('Error retrieving data')
     })
   }, [])
 
