@@ -1,7 +1,28 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import api from './services/api'
+import './index.css'
 
+const Notification = ({ type, message }) => {
+
+  if (type === null) {
+    return null
+  }
+  if (type === "added") {
+    return (
+      <div className="added">
+       {message}
+      </div>
+    )
+  }
+  if (type === "error") {
+    return (
+      <div className="error">
+       {message}
+      </div>
+    )
+  }
+}
 const Person = ({ removePerson, id, name, number }) => {
   console.log(removePerson)
   return (
@@ -31,9 +52,9 @@ const Form = ({ onSubmit, value, onChange }) => {
   console.log(onChange)
   return (
     <form onSubmit={onSubmit}>
-        Name: <Input value={value[0]} onChange={onChange[0]}/>
-        Number: <Input value={value[1]} onChange={onChange[1]}/>
-        <button type="submit">add</button>
+        <div>name: <Input value={value[0]} onChange={onChange[0]} /></div>
+        <div>number: <Input value={value[1]} onChange={onChange[1]} /></div>
+        <div><button type="submit">add</button></div>
     </form>
   )
 }
@@ -56,6 +77,10 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  const [actionMessage, setActionMessage] = useState({
+    type: 'null',
+    message: 'null'
+  })
 
   useEffect(() => {
     console.log('effect')
@@ -74,15 +99,31 @@ const App = () => {
       console.log(person.name, newName)
       if (person.name === newName) {
         confirm(`${newName} is already added to phonebook, are you sure you want to update number`)
+        console.log('setting action message')
         api.update({name: newName, number: newNumber}, person.id)
         .then(updatedPerson => {
           console.log(person.id)
           console.log(updatedPerson)
           setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
+          setActionMessage({
+            type: 'added',
+            message:`${newName} sucesfully added to the phonebook`
+          })
         })
         .catch (error => {
+          console.log(error)
+          setActionMessage({
+            type: 'error',
+            message:`the person ${newName} was unable to be updated `
+          })
           alert(`the person ${newName} was unable to be updated `)
         })
+        setTimeout(() => {
+          setActionMessage({
+            type: null,
+            message: null
+          })
+        }, 5000)
         setNewName("")
         setNewNumber("")
         check = true
@@ -143,6 +184,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification type={actionMessage.type} message={actionMessage.message}/>
       <Filter value={newSearch} onChange={handleNewSearch}/>
       <h3>Add a new</h3>
       <Form onSubmit={addPerson} value={[newName,newNumber]} onChange={[handleNameChange, handleNumberChange]}/>

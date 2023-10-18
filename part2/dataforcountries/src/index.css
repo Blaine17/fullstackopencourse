@@ -13,9 +13,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-div {
-  padding: 5px
-}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -26,11 +24,15 @@ a:hover {
 }
 
 body {
-  margin: 5;
+  margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+div {
+  text-align: left;
 }
 
 h1 {
@@ -68,27 +70,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
-
-input {
-  padding: 5px
-}
-.error {
-  color: red;
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.added {
-  color: green;
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
 }
